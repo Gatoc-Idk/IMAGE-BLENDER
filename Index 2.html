@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 24.8.4.2 (Linux)"/>
+	<meta name="created" content="00:00:00"/>
+	<meta name="changed" content="00:00:00"/>
+	<style type="text/css">
+		@page { size: 8.27in 11.69in; margin: 0.79in }
+		p { line-height: 115%; margin-bottom: 0.1in; background: transparent }
+		pre { font-family: "Liberation Mono", monospace; font-size: 10pt; background: transparent }
+	</style>
+</head>
+<body lang="en-US" link="#000080" vlink="#800000" dir="ltr"><pre>&lt;p&gt;&lt;!DOCTYPE html&gt; &lt;html lang=&amp;quot;en&amp;quot;&gt; &lt;head&gt;  &lt;meta charset=&amp;quot;UTF-8&amp;quot; /&gt;  &lt;meta name=&amp;quot;viewport&amp;quot; content=&amp;quot;width=device-width, initial-scale=1.0&amp;quot;/&gt;  &lt;title&gt;IMAGE+MIXER&lt;/title&gt;  &lt;style&gt;  body {  font-family: Arial, sans-serif;  background-color: #f0f0f0;  margin: 0;  padding: 20px;  }&lt;/p&gt;
+
+&lt;p&gt; .container {  max-width: 800px;  margin: auto;  background-color: #fff;  padding: 20px;  box-shadow: 0 0 10px rgba(0,0,0,0.1);  }&lt;/p&gt;
+
+&lt;p&gt; h1, h2 {  text-align: center;  }&lt;/p&gt;
+
+&lt;p&gt; form {  display: flex;  justify-content: center;  margin-bottom: 20px;  }&lt;/p&gt;
+
+&lt;p&gt; input[type=&amp;quot;text&amp;quot;], select {  padding: 10px;  font-size: 16px;  }&lt;/p&gt;
+
+&lt;p&gt; input[type=&amp;quot;text&amp;quot;] {  width: 60%;  }&lt;/p&gt;
+
+&lt;p&gt; button {  padding: 10px 15px;  margin-left: 10px;  font-size: 16px;  cursor: pointer;  }&lt;/p&gt;
+
+&lt;p&gt; #generated-image-container, #saved-images-container {  display: flex;  flex-wrap: wrap;  gap: 10px;  justify-content: center;  }&lt;/p&gt;
+
+&lt;p&gt; .image-card {  border: 1px solid #ccc;  padding: 10px;  background-color: #fafafa;  text-align: center;  }&lt;/p&gt;
+
+&lt;p&gt; .image-card img {  max-width: 200px;  height: auto;  display: block;  margin-bottom: 5px;  }&lt;/p&gt;
+
+&lt;p&gt; #canvas {  display: none;  }&lt;/p&gt;
+
+&lt;p&gt; .upload-section {  display: flex;  justify-content: center;  gap: 10px;  margin-top: 10px;  flex-wrap: wrap;  }  &lt;/style&gt; &lt;/head&gt; &lt;body&gt;  &lt;div class=&amp;quot;container&amp;quot;&gt;  &lt;h1&gt;IMAGE+MIXER&lt;/h1&gt;  &lt;form id=&amp;quot;prompt-form&amp;quot;&gt;  &lt;input type=&amp;quot;text&amp;quot; id=&amp;quot;prompt-input&amp;quot; placeholder=&amp;quot;Enter your prompt...&amp;quot; required&gt;  &lt;button type=&amp;quot;submit&amp;quot;&gt;Generate Image&lt;/button&gt;  &lt;/form&gt;  &lt;div id=&amp;quot;generated-image-container&amp;quot;&gt;&lt;/div&gt;  &lt;button id=&amp;quot;save-button&amp;quot; disabled&gt;Save Image to Database&lt;/button&gt;&lt;/p&gt;
+
+&lt;p&gt; &lt;h2&gt;Saved Images&lt;/h2&gt;  &lt;div id=&amp;quot;saved-images-container&amp;quot;&gt;&lt;/div&gt;&lt;/p&gt;
+
+&lt;p&gt; &lt;h2&gt;Add Image to Database&lt;/h2&gt;  &lt;div class=&amp;quot;upload-section&amp;quot;&gt;  &lt;input type=&amp;quot;file&amp;quot; id=&amp;quot;image-upload&amp;quot; accept=&amp;quot;image/*&amp;quot;&gt;  &lt;input type=&amp;quot;text&amp;quot; id=&amp;quot;keyword-input&amp;quot; placeholder=&amp;quot;Enter keyword&amp;quot;&gt;  &lt;select id=&amp;quot;type-input&amp;quot;&gt;  &lt;option value=&amp;quot;normal&amp;quot;&gt;Normal&lt;/option&gt;  &lt;option value=&amp;quot;background&amp;quot;&gt;Background&lt;/option&gt;  &lt;/select&gt;  &lt;button id=&amp;quot;upload-button&amp;quot;&gt;Upload&lt;/button&gt;  &lt;/div&gt;  &lt;/div&gt;&lt;/p&gt;
+
+&lt;p&gt; &lt;canvas id=&amp;quot;canvas&amp;quot; width=&amp;quot;512&amp;quot; height=&amp;quot;512&amp;quot;&gt;&lt;/canvas&gt;&lt;/p&gt;
+
+&lt;p&gt; &lt;script&gt;  const promptForm = document.getElementById('prompt-form');  const promptInput = document.getElementById('prompt-input');  const generatedImageContainer = document.getElementById('generated-image-container');  const saveButton = document.getElementById('save-button');  const savedImagesContainer = document.getElementById('saved-images-container');  const imageUpload = document.getElementById('image-upload');  const keywordInput = document.getElementById('keyword-input');  const typeInput = document.getElementById('type-input');  const uploadButton = document.getElementById('upload-button');  const canvas = document.getElementById('canvas');  const ctx = canvas.getContext('2d');&lt;/p&gt;
+
+&lt;p&gt; let currentImageData = null;&lt;/p&gt;
+
+&lt;p&gt; function loadSavedImages() {  const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];  savedImagesContainer.innerHTML = '';&lt;/p&gt;
+
+&lt;p&gt; savedItems.forEach(({ keyword, type, imageData }, index) =&gt; {  const imageCard = document.createElement('div');  imageCard.classList.add('image-card');&lt;/p&gt;
+
+&lt;p&gt; const img = document.createElement('img');  img.src = imageData;&lt;/p&gt;
+
+&lt;p&gt; const p = document.createElement('p');  p.textContent = &amp;#96;Keyword: ${keyword} | Type: ${type}&amp;#96;;&lt;/p&gt;
+
+&lt;p&gt; const delBtn = document.createElement('button');  delBtn.textContent = '&amp;#55357;&amp;#56785;&amp;#65039; Delete';  delBtn.onclick = () =&gt; {  const code = prompt('Enter delete code:');  if (code === 'GATOCDEVISTHEBEST') {  const newItems = [...savedItems];  newItems.splice(index, 1);  localStorage.setItem('savedItems', JSON.stringify(newItems));  loadSavedImages();  } else {  alert('&amp;#10060; Incorrect code. Access denied.');  }  };&lt;/p&gt;
+
+&lt;p&gt; imageCard.appendChild(img);  imageCard.appendChild(p);  imageCard.appendChild(delBtn);  savedImagesContainer.appendChild(imageCard);  });  }&lt;/p&gt;
+
+&lt;p&gt; function saveImage() {  if (!currentImageData) return;  const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];  savedItems.push({ keyword: 'generated', type: 'normal', imageData: currentImageData });  localStorage.setItem('savedItems', JSON.stringify(savedItems));  loadSavedImages();  saveButton.disabled = true;  }&lt;/p&gt;
+
+&lt;p&gt; function getImageDataFromBase64(base64) {  return new Promise((resolve) =&gt; {  const img = new Image();  img.onload = () =&gt; {  const tempCanvas = document.createElement('canvas');  tempCanvas.width = canvas.width;  tempCanvas.height = canvas.height;  const tempCtx = tempCanvas.getContext('2d');  tempCtx.drawImage(img, 0, 0, canvas.width, canvas.height);  resolve(tempCanvas);  };  img.src = base64;  });  }&lt;/p&gt;
+
+&lt;p&gt; async function blendImages(backgrounds, normals) {  ctx.clearRect(0, 0, canvas.width, canvas.height);  for (const bg of backgrounds) {  ctx.globalAlpha = 1.0;  ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);  }&lt;/p&gt;
+
+&lt;p&gt; const alpha = 1 / (normals.length || 1);  for (const img of normals) {  ctx.globalAlpha = alpha;  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);  }&lt;/p&gt;
+
+&lt;p&gt; ctx.globalAlpha = 1.0;  return canvas.toDataURL();  }&lt;/p&gt;
+
+&lt;p&gt; function matchImagesToPrompt(prompt, savedItems) {  const keywords = prompt.toLowerCase().split(/\s+/);  return savedItems.filter(({ keyword }) =&gt;  keywords.some(word =&gt; keyword.toLowerCase().includes(word))  );  }&lt;/p&gt;
+
+&lt;p&gt; promptForm.addEventListener('submit', async (e) =&gt; {  e.preventDefault();  const prompt = promptInput.value.trim();  if (!prompt) return;&lt;/p&gt;
+
+&lt;p&gt; generatedImageContainer.innerHTML = 'Generating image...';  saveButton.disabled = true;&lt;/p&gt;
+
+&lt;p&gt; const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];  const matched = matchImagesToPrompt(prompt, savedItems);&lt;/p&gt;
+
+&lt;p&gt; if (matched.length === 0) {  generatedImageContainer.innerHTML = 'No matching images found.';  return;  }&lt;/p&gt;
+
+&lt;p&gt; const backgrounds = await Promise.all(  matched.filter(item =&gt; item.type === 'background').map(item =&gt; getImageDataFromBase64(item.imageData))  );&lt;/p&gt;
+
+&lt;p&gt; const normals = await Promise.all(  matched.filter(item =&gt; item.type === 'normal').map(item =&gt; getImageDataFromBase64(item.imageData))  );&lt;/p&gt;
+
+&lt;p&gt; const blendedImage = await blendImages(backgrounds, normals);  currentImageData = blendedImage;&lt;/p&gt;
+
+&lt;p&gt; generatedImageContainer.innerHTML = '';  const imageCard = document.createElement('div');  imageCard.classList.add('image-card');&lt;/p&gt;
+
+&lt;p&gt; const img = document.createElement('img');  img.src = blendedImage;  img.alt = prompt;&lt;/p&gt;
+
+&lt;p&gt; imageCard.appendChild(img);  generatedImageContainer.appendChild(imageCard);  saveButton.disabled = false;  });&lt;/p&gt;
+
+&lt;p&gt; uploadButton.addEventListener('click', () =&gt; {  const file = imageUpload.files[0];  const keyword = keywordInput.value.trim();  const type = typeInput.value;  if (!file || !keyword || !type) {  alert('Please provide an image, keyword, and type.');  return;  }&lt;/p&gt;
+
+&lt;p&gt; const reader = new FileReader();  reader.onload = function(event) {  const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];  savedItems.push({ keyword: keyword.toLowerCase(), type: type.toLowerCase(), imageData: event.target.result });  localStorage.setItem('savedItems', JSON.stringify(savedItems));  loadSavedImages();  keywordInput.value = '';  imageUpload.value = '';  };  reader.readAsDataURL(file);  });&lt;/p&gt;
+
+&lt;p&gt; saveButton.addEventListener('click', saveImage);  loadSavedImages();  &lt;/script&gt; &lt;/body&gt; &lt;/html&gt;&lt;/p&gt;</pre>
+</body>
+</html>
